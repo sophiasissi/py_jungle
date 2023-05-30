@@ -65,7 +65,9 @@ while run:
     botao1,botao2,botao3,botao4 = fs.ver_fase(level,pos)
     # print(pos)
     if botao1 == True:
-        print('Deu Certo!!!')
+        level += 1
+        tela = (pygame.image.load(f'imagem/{level}.png'))
+        screen.blit(tela,(0,0))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
