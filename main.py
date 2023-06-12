@@ -1,7 +1,6 @@
 import pygame
 import math
 # import Fases
-#something
 
 #classe dos botões
 class Button1():
@@ -54,12 +53,10 @@ class Fases():
         elif level == 26:
             bt1 = Button1(220,547,136,166)
             bt2 = Button1(476,544,132,168)
-            bt3 = Button1(359,764,138,172)
             botao1 = bt1.verificar_clique()
             botao2 = bt2.verificar_clique()
-            botao3 = bt2.verificar_clique()
-            print(botao1,botao2,botao3)
-            return botao1,botao2,botao3    
+            print(botao1,botao2,botao3,botao4)
+            return botao1,botao2   
 pygame.init()
 timer = pygame.time.Clock()
 #medidas da janela                ------------------- OLhar o minuto final do video para entender como utilizar isto como uma class em outros arquivos(video dos botões)------------------------------
@@ -104,7 +101,7 @@ while run:
             pontuacao = pontuacao + erro
             level += 1
         
-    if level == 8:
+    elif level == 8:
         if botao1 == True:
            pontuacao = pontuacao + erro
            level +=1 
@@ -118,7 +115,7 @@ while run:
             pontuacao = pontuacao + erro
             level +=1
         
-    if level == 9:
+    elif level == 9:
         if botao1 == True:
            pontuacao = pontuacao + acerto
            level +=1 
@@ -132,7 +129,7 @@ while run:
             pontuacao = pontuacao + erro
             level +=1
         
-    if level == 10:
+    elif level == 10:
         if botao1 == True:
            pontuacao = pontuacao + erro
            level +=1 
@@ -146,7 +143,7 @@ while run:
             pontuacao = pontuacao + erro
             level +=1    
     
-    if level == 11:
+    elif level == 11:
         if botao1 == True:
            pontuacao = pontuacao + acerto
            level +=1 
@@ -160,7 +157,7 @@ while run:
             pontuacao = pontuacao + erro
         level +=1    
     
-    if level == 12:
+    elif level == 12:
         if botao1 == True:
            pontuacao = pontuacao + erro
            level +=1         
@@ -174,7 +171,7 @@ while run:
             pontuacao = pontuacao + acerto
         level +=1
         
-    if level == 13:
+    elif level == 13:
         if botao1 == True:
            pontuacao = pontuacao + acerto
            level +=1 
@@ -188,7 +185,7 @@ while run:
             pontuacao = pontuacao + erro
         level +=1    
     
-    if level == 14:
+    elif level == 14:
         if botao1 == True:
             pontuacao = pontuacao + erro
             level +=1
@@ -202,7 +199,7 @@ while run:
             pontuacao = pontuacao + erro
             level +=1    
     
-    if level == 15:
+    elif level == 15:
         if botao1 == True:
            pontuacao = pontuacao + acerto
            level +=1 
@@ -216,7 +213,7 @@ while run:
             pontuacao = pontuacao + erro
             level +=1
     
-    if level == 16:
+    elif level == 16:
         if botao1 == True:
            pontuacao = pontuacao + erro
            level +=1 
@@ -230,7 +227,7 @@ while run:
             pontuacao = pontuacao + erro
             level +=1
     
-    if level == 17:
+    elif level == 17:
         if botao1 == True:
            pontuacao = pontuacao + acerto
            level +=1 
@@ -244,7 +241,7 @@ while run:
             pontuacao = pontuacao + erro
             level +=1
     
-    if level == 18:
+    elif level == 18:
         if botao1 == True:
            pontuacao = pontuacao + erro
            level +=1 
