@@ -1,5 +1,5 @@
 import pygame
-import math
+import time 
 # import Fases
 
 #classe dos botões
@@ -18,6 +18,7 @@ class Button1():
             if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
                 self.clicked = True
                 action = True
+                time.sleep(0.2)
                 if pygame.mouse.get_pressed()[0] == 0:
                     self.clicked = False
         return action
@@ -30,33 +31,42 @@ class Fases():
         botao2 = False
         botao3 = False
         botao4 = False
-        if 7 <= level <= 20 or level == 24 or 29<= level <= 30 or 34 <= level <= 36:
-            bt1 = Button1(234,551,135,168,pos)
-            bt2 = Button1(471,548,140,84,pos)
-            bt3 = Button1(236,766,131,169,pos)
-            bt4 = Button1(473,766,135,171,pos)   
+        if 7 <= level <= 20 or level == 24 or 29 <= level <= 30 or 34 <= level <= 36:
+            if level ==10 or level == 11 or level == 15 or 16 <= level <= 18:
+                bt1 = Button1(351,499,703,999,pos)
+                botao1 = bt1.verificar_clique()
+                return botao1
+            else:
+                bt1 = Button1(234,551,135,168,pos)
+                bt2 = Button1(471,548,140,84,pos)
+                bt3 = Button1(236,766,131,169,pos)
+                bt4 = Button1(473,766,135,171,pos)   
+                botao1 = bt1.verificar_clique()
+                botao2 = bt2.verificar_clique()
+                botao3 = bt3.verificar_clique()
+                botao4 = bt4.verificar_clique()
+                print(botao1,botao2,botao3,botao4)
+                return botao1,botao2,botao3,botao4
+        elif level == 21 or level == 25 or level == 31:
+            bt1 = Button1(220,547,136,166,pos)
+            bt2 = Button1(476,544,132,168,pos)
+            bt3 = Button1(359,764,138,172,pos)
             botao1 = bt1.verificar_clique()
             botao2 = bt2.verificar_clique()
             botao3 = bt3.verificar_clique()
-            botao4 = bt4.verificar_clique()
-            print(botao1,botao2,botao3,botao4)
-            return botao1,botao2,botao3,botao4
-        elif level == 21 or level == 25 or level == 31:
-            bt1 = Button1(220,547,136,166)
-            bt2 = Button1(476,544,132,168)
-            bt3 = Button1(359,764,138,172)
-            botao1 = bt1.verificar_clique()
-            botao2 = bt2.verificar_clique()
-            botao3 = bt2.verificar_clique()
             print(botao1,botao2,botao3)
             return botao1,botao2,botao3
         elif level == 26:
-            bt1 = Button1(220,547,136,166)
-            bt2 = Button1(476,544,132,168)
+            bt1 = Button1(220,547,136,166,pos)
+            bt2 = Button1(476,544,132,168,pos)
             botao1 = bt1.verificar_clique()
             botao2 = bt2.verificar_clique()
-            print(botao1,botao2,botao3,botao4)
-            return botao1,botao2   
+            return botao1,botao2  
+        elif 22 <= level <= 23 or 27 <= level <= 28 or 32 <= level <= 33:
+            bt1 = Button1(351,499,703,999,pos)
+            botao1 = bt1.verificar_clique()
+            return botao1
+
 pygame.init()
 timer = pygame.time.Clock()
 #medidas da janela                ------------------- OLhar o minuto final do video para entender como utilizar isto como uma class em outros arquivos(video dos botões)------------------------------
@@ -79,13 +89,17 @@ while run:
     screen.blit(tela,(0,0))
     pos = pygame.mouse.get_pos()
     fs = Fases()
-    if 7 <= level <= 20 or level == 24 or 29<= level <= 30 or 34 <= level <= 36:
-        botao1,botao2,botao3,botao4 = fs.ver_fase(level,pos)
+    if 7 <= level <= 20 or level == 24 or 29 <= level <= 30 or 34 <= level <= 36:
+        if level ==10 or level == 11 or 15 <= level <= 18:
+            botao1 = fs.ver_fase(level,pos)
+        else:
+            botao1,botao2,botao3,botao4 = fs.ver_fase(level,pos)
     elif level == 21 or level == 25 or level == 31:
         botao1,botao2,botao3 = fs.ver_fase(level,pos)
     elif level == 26:
-        botao1,botao2,botao3 = fs.ver_fase(level,pos)
-    
+        botao1,botao2 = fs.ver_fase(level,pos)
+    elif 22 <= level <= 23 or 27 <= level <= 28 or 32 <= level <= 33:
+        botao1 = fs.ver_fase(level,pos) 
     # print(pos)
     if level == 7:
         if botao1 == True:
@@ -100,6 +114,7 @@ while run:
         elif botao4 == True:
             pontuacao = pontuacao + erro
             level += 1
+        print(level)
         
     elif level == 8:
         if botao1 == True:
@@ -114,7 +129,7 @@ while run:
         elif botao4 == True:
             pontuacao = pontuacao + erro
             level +=1
-        
+        print(level)
     elif level == 9:
         if botao1 == True:
            pontuacao = pontuacao + acerto
@@ -128,35 +143,15 @@ while run:
         elif botao4 == True:
             pontuacao = pontuacao + erro
             level +=1
-        
+        print(level)
     elif level == 10:
         if botao1 == True:
-           pontuacao = pontuacao + erro
            level +=1 
-        elif botao2 == True:
-            pontuacao = pontuacao + erro
-            level +=1
-        elif botao3 == True:
-            pontuacao = pontuacao + acerto
-            level +=1
-        elif botao4 == True:
-            pontuacao = pontuacao + erro
-            level +=1    
-    
+        print(level)  
     elif level == 11:
         if botao1 == True:
-           pontuacao = pontuacao + acerto
            level +=1 
-        elif botao2 == True:
-            pontuacao = pontuacao + erro
-            level +=1
-        elif botao3 == True:
-            pontuacao = pontuacao + acerto
-            level +=1
-        elif botao4 == True:
-            pontuacao = pontuacao + erro
-        level +=1    
-    
+        print(level)  
     elif level == 12:
         if botao1 == True:
            pontuacao = pontuacao + erro
@@ -165,12 +160,12 @@ while run:
             pontuacao = pontuacao + erro
             level +=1
         elif botao3 == True:
-            pontuacao = pontuacao + erro
+            pontuacao = pontuacao + acerto
             level +=1
         elif botao4 == True:
-            pontuacao = pontuacao + acerto
-        level +=1
-        
+            pontuacao = pontuacao + erro
+            level +=1
+        print(level)  
     elif level == 13:
         if botao1 == True:
            pontuacao = pontuacao + acerto
@@ -183,54 +178,206 @@ while run:
             level +=1
         elif botao4 == True:
             pontuacao = pontuacao + erro
-        level +=1    
-    
+            level +=1    
+        print(level)  
     elif level == 14:
         if botao1 == True:
             pontuacao = pontuacao + erro
             level +=1
         elif botao2 == True:
+            pontuacao = pontuacao + erro
+            level +=1
+        elif botao3 == True:
+            pontuacao = pontuacao + erro
+            level +=1
+        elif botao4 == True:
+            pontuacao = pontuacao + acerto
+            level +=1    
+        print(level)  
+    elif level == 15:
+        if botao1 == True:
+           level +=1 
+        print(level)  
+    elif level == 16:
+        if botao1 == True:
+           level +=1 
+        print(level)  
+    elif level == 17:
+        if botao1 == True:
+           level +=1 
+        print(level)  
+    elif level == 18:
+        if botao1 == True:
+           level +=1 
+        print(level)  
+    if level == 19:
+        if botao1 == True:
+           pontuacao = pontuacao + acerto
+           level += 1 
+        elif botao2 == True:
+            pontuacao = pontuacao + erro
+            level += 1
+        elif botao3 == True:
+            pontuacao = pontuacao + erro
+            level += 1
+        elif botao4 == True:
+            pontuacao = pontuacao + erro
+            level += 1
+        print(level)  
+    elif level == 20:
+        if botao1 == True:
+           pontuacao = pontuacao + erro
+           level +=1 
+        elif botao2 == True:
             pontuacao = pontuacao + acerto
             level +=1
         elif botao3 == True:
             pontuacao = pontuacao + erro
+            level +=1
+        elif botao4 == True:
+            pontuacao = pontuacao + erro
+            level +=1
+        print(level)  
+    elif level == 21:
+        if botao1 == True:
+           pontuacao = pontuacao + acerto
+           level +=1 
+        elif botao2 == True:
+            pontuacao = pontuacao + erro
+            level +=1
+        elif botao3 == True:
+            pontuacao = pontuacao + erro
+            level +=1
+        print(level)  
+    elif level == 22:
+        if botao1 == True:
+           level +=1   
+        print(level)  
+    elif level == 23:
+        if botao1 == True:
+           level +=1 
+        print(level)  
+    elif level == 24:
+        if botao1 == True:
+           pontuacao = pontuacao + erro
+           level +=1         
+        elif botao2 == True:
+            pontuacao = pontuacao + erro
+            level +=1
+        elif botao3 == True:
+            pontuacao = pontuacao + acerto
+            level +=1
+        elif botao4 == True:
+            pontuacao = pontuacao + erro
+            level +=1
+        print(level)  
+    elif level == 25:
+        if botao1 == True:
+           pontuacao = pontuacao + acerto
+           level +=1 
+        elif botao2 == True:
+            pontuacao = pontuacao + erro
+            level +=1
+        elif botao3 == True:
+            pontuacao = pontuacao + erro
+            level +=1    
+        print(level)  
+    elif level == 26:
+        if botao1 == True:
+            pontuacao = pontuacao + erro
+            level +=1
+        elif botao2 == True:
+            pontuacao = pontuacao + acerto
+            level +=1
+        print(level)  
+    
+    elif level == 27:
+        if botao1 == True:
+           level +=1 
+        print(level)  
+    elif level == 28:
+        if botao1 == True:
+           level +=1 
+        print(level)  
+    elif level == 29:
+        if botao1 == True:
+           pontuacao = pontuacao + acerto
+           level +=1 
+        elif botao2 == True:
+            pontuacao = pontuacao + erro
+            level +=1
+        elif botao3 == True:
+            pontuacao = pontuacao + erro
+            level +=1
+        elif botao4 == True:
+            pontuacao = pontuacao + erro
+            level +=1
+        print(level)  
+    elif level == 30:
+        if botao1 == True:
+           pontuacao = pontuacao + acerto
+           level +=1 
+        elif botao2 == True:
+            pontuacao = pontuacao + erro
+            level +=1
+        elif botao3 == True:
+            pontuacao = pontuacao + erro
+            level +=1
+        elif botao4 == True:
+            pontuacao = pontuacao + erro
+            level +=1
+        print(level)  
+    if level == 31:
+        if botao1 == True:
+           pontuacao = pontuacao + erro
+           level += 1 
+        elif botao2 == True:
+            pontuacao = pontuacao + acerto
+            level += 1
+        elif botao3 == True:
+            pontuacao = pontuacao + erro
+            level += 1
+        print(level)      
+    elif level == 32:
+        if botao1 == True:
+           level +=1 
+        print(level)     
+    elif level == 33:
+        if botao1 == True:
+           level +=1 
+        print(level)      
+    elif level == 34:
+        if botao1 == True:
+           pontuacao = pontuacao + erro
+           level +=1 
+        elif botao2 == True:
+            pontuacao = pontuacao + erro
+            level +=1
+        elif botao3 == True:
+            pontuacao = pontuacao + erro
+            level +=1
+        elif botao4 == True:
+            pontuacao = pontuacao + acerto
+            level +=1    
+        print(level)  
+    elif level == 35:
+        if botao1 == True:
+           pontuacao = pontuacao + acerto
+           level +=1 
+        elif botao2 == True:
+            pontuacao = pontuacao + erro
+            level +=1
+        elif botao3 == True:
+            pontuacao = pontuacao + acerto
             level +=1
         elif botao4 == True:
             pontuacao = pontuacao + erro
             level +=1    
-    
-    elif level == 15:
+        print(level)  
+    elif level == 36:
         if botao1 == True:
            pontuacao = pontuacao + acerto
-           level +=1 
-        elif botao2 == True:
-            pontuacao = pontuacao + erro
-            level +=1
-        elif botao3 == True:
-            pontuacao = pontuacao + acerto
-            level +=1
-        elif botao4 == True:
-            pontuacao = pontuacao + erro
-            level +=1
-    
-    elif level == 16:
-        if botao1 == True:
-           pontuacao = pontuacao + erro
-           level +=1 
-        elif botao2 == True:
-            pontuacao = pontuacao + erro
-            level +=1
-        elif botao3 == True:
-            pontuacao = pontuacao + acerto
-            level +=1
-        elif botao4 == True:
-            pontuacao = pontuacao + erro
-            level +=1
-    
-    elif level == 17:
-        if botao1 == True:
-           pontuacao = pontuacao + acerto
-           level +=1 
+           level +=1         
         elif botao2 == True:
             pontuacao = pontuacao + erro
             level +=1
@@ -240,23 +387,9 @@ while run:
         elif botao4 == True:
             pontuacao = pontuacao + erro
             level +=1
+        print(level)  
     
-    elif level == 18:
-        if botao1 == True:
-           pontuacao = pontuacao + erro
-           level +=1 
-        elif botao2 == True:
-            pontuacao = pontuacao + erro
-            level +=1
-        elif botao3 == True:
-            pontuacao = pontuacao + acerto
-            level +=1
-        elif botao4 == True:
-            pontuacao = pontuacao + erro
-            level +=1
-    print(pontuacao)
-    
-    
+     
     tela = (pygame.image.load(f'imagem/{level}.png'))
     screen.blit(tela,(0,0))
 
