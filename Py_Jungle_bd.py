@@ -59,8 +59,29 @@ def execute_query(connection, query):
                 print(f"A tabela '{table_name}' já possui registros. A inserção não será executada.")
                 connection.rollback()
                 return
+            
+        cursor.execute("ALTER TABLE Respostas AUTO_INCREMENT = 1")
+
+        if "Perguntas" in query and "INSERT INTO" in query:
+            table_name = "Perguntas"
+            cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
+            result = cursor.fetchone()
+            if result[0] > 0:
+                print(f"A tabela '{table_name}' já possui registros. A inserção não será executada.")
+                connection.rollback()
+                return
+        cursor.execute("ALTER TABLE Perguntas AUTO_INCREMENT = 1")
         connection.commit()
         print("Query successful\n")
+    except Error as err:
+        print(f"Error: '{err}'")
+
+def execute_query_para_resp(connection, query):
+    cursor = connection.cursor()
+    try:
+        cursor.execute(query)
+        connection.commit()
+        print("Query successful")
     except Error as err:
         print(f"Error: '{err}'")
 
@@ -100,7 +121,7 @@ CREATE TABLE IF NOT EXISTS Ranking (
   idUsuários INT NOT NULL, 
   Total_Acertos INT NULL DEFAULT NULL, 
   PRIMARY KEY (idRanking),
-  CONSTRAINT Usu_Rank FOREIGN KEY(idUsuários) REFERENCES Usuários(idUsuários)
+  FOREIGN KEY(idUsuários) REFERENCES Usuários(idUsuários)
   ); 
 """
 create_perguntas_prof_table = """
@@ -250,7 +271,7 @@ def inserir_resposta_prof(id_pergunta_prof, texto_resposta, esta_correto):
         # Inserir as informações da resposta na tabela
         query = f"INSERT INTO RespostasdoProf (idPerguntas_Prof, Respostas_Prof_Texto, Está_correto_Prof) " \
                 f"VALUES ({id_pergunta_prof}, '{texto_resposta}', {esta_correto})"
-        execute_query(connection, query)
+        execute_query_para_resp(connection, query)
         print("Resposta do professor inserida com sucesso!")
     except Error as err:
         print(f"Erro ao inserir a resposta do professor: {err}")
@@ -311,6 +332,7 @@ e_aluno = int(input("Digite o valor para o campo É_Aluno (1 para True, 0 para F
 
 inserir_usuario(username, email, login, senha, e_aluno)
 
+#Classe para o usuário ter a conexão com o banco de dados
 class DatabaseConnection:
     def __init__(self, host_name, user_name, user_password, db_name):
         self.host_name = host_name
