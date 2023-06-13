@@ -17,9 +17,6 @@ def create_server_connection(host_name, user_name, user_password):
 
     return connection
 
-connection = create_server_connection("localhost", "root", 'Escola2015!!')
-
-
 def create_database(connection, query):
     dbcursor = connection.cursor()
     try:
@@ -27,9 +24,6 @@ def create_database(connection, query):
         print("Database created successfully\n")
     except Error as err:
         print(f"Error: '{err}'")
-
-create_database(connection,'CREATE DATABASE IF NOT EXISTS py_jungle')
-
 
 def create_db_connection(host_name, user_name, user_password, db_name):
     connection = None
@@ -51,41 +45,85 @@ def execute_query(connection, query):
     try:
         # Executar a consulta
         cursor.execute(query)
-        if "Respostas" in query and "INSERT INTO" in query:
-            table_name = "Respostas"
-            cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
-            result = cursor.fetchone()
-            if result[0] > 0:
-                print(f"A tabela '{table_name}' já possui registros. A inserção não será executada.")
-                connection.rollback()
-                return
-            
-        cursor.execute("ALTER TABLE Respostas AUTO_INCREMENT = 1")
-
-        if "Perguntas" in query and "INSERT INTO" in query:
-            table_name = "Perguntas"
-            cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
-            result = cursor.fetchone()
-            if result[0] > 0:
-                print(f"A tabela '{table_name}' já possui registros. A inserção não será executada.")
-                connection.rollback()
-                return
-        cursor.execute("ALTER TABLE Perguntas AUTO_INCREMENT = 1")
+        ####if "Respostas" in query and "INSERT INTO" in query:
+        ####    table_name = "Respostas"
+        ####    cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
+        ####    result = cursor.fetchone()
+        ####    if result[0] > 0:
+        ####        print(f"A tabela '{table_name}' já possui registros. A inserção não será executada.")
+        ####        connection.rollback()
+        ####        return
         connection.commit()
         print("Query successful\n")
     except Error as err:
         print(f"Error: '{err}'")
 
-def execute_query_para_resp(connection, query):
-    cursor = connection.cursor()
-    try:
-        cursor.execute(query)
-        connection.commit()
-        print("Query successful")
-    except Error as err:
-        print(f"Error: '{err}'")
+def inserir_pergunta_prof(texto_pergunta):
+    # Conectar ao banco de dados
+    connection = create_db_connection(hostwork, usuariowork, senhadb, "py_jungle")
 
-connection = create_db_connection("localhost", "root", "Escola2015!!", "py_jungle")
+    try:
+        # Inserir a pergunta na tabela
+        query = f"INSERT INTO Perguntas_Prof (Perguntas_Prof_Texto) VALUES ('{texto_pergunta}')"
+        execute_query(connection, query)
+        print("Pergunta do professor inserida com sucesso!")
+    except Error as err:
+        print(f"Erro ao inserir a pergunta do professor: {err}")
+    finally:
+        # Fechar a conexão com o banco de dados
+        if connection:
+            connection.close()
+
+def inserir_resposta_prof(id_pergunta_prof, texto_resposta, esta_correto):
+    # Conectar ao banco de dados
+    connection = create_db_connection(hostwork, usuariowork, senhadb, "py_jungle")
+
+    try:
+        # Inserir as informações da resposta na tabela
+        query = f"INSERT INTO Respostas_Prof (idPerguntas_Prof, Respostas_Prof_Texto, Está_correto) " \
+                f"VALUES ({id_pergunta_prof}, '{texto_resposta}', {esta_correto})"
+        execute_query(connection, query)
+        print("Resposta do professor inserida com sucesso!")
+    except Error as err:
+        print(f"Erro ao inserir a resposta do professor: {err}")
+    finally:
+        # Fechar a conexão com o banco de dados
+        if connection:
+            connection.close()
+
+def inserir_ranking(id_usuario, total_acertos):
+    # Connect to the database
+    connection = create_db_connection(hostwork, usuariowork, senhadb, "py_jungle")
+
+    try:
+        # Insert the ranking information into the table
+        query = f"INSERT INTO Ranking (idUsuários, Total_Acertos) VALUES ({id_usuario}, {total_acertos})"
+        execute_query(connection, query)
+        print("Ranking information inserted successfully!")
+    except Error as err:
+        print(f"Error inserting ranking information: {err}")
+    finally:
+        # Close the database connection
+        if connection:
+            connection.close()
+
+def inserir_usuario(username, email, login, senha, e_aluno):
+    # Conectar ao banco de dados
+    connection = create_db_connection(hostwork, usuariowork, senhadb, "py_jungle")
+
+    try:
+        # Inserir o usuário na tabela
+        query = f"INSERT INTO Usuários (Username, Email, Login, Senha, É_Aluno) " \
+                f"VALUES ('{username}', '{email}', {login}, '{senha}', {e_aluno})"
+        execute_query(connection, query)
+        print("Usuário inserido com sucesso!")
+    except Error as err:
+        print(f"Erro ao inserir o usuário: {err}")
+    finally:
+        # Fechar a conexão com o banco de dados
+        if connection:
+            connection.close()
+
 
 create_perguntas_table = """
 CREATE TABLE IF NOT EXISTS Perguntas ( 
@@ -132,22 +170,15 @@ CREATE TABLE IF NOT EXISTS Perguntas_Prof (
   ); 
 """
 create_respostas_prof_table = """
-CREATE TABLE IF NOT EXISTS RespostasdoProf ( 
+CREATE TABLE IF NOT EXISTS Respostas_Prof ( 
   idRespostas_Prof INT NOT NULL AUTO_INCREMENT, 
   idPerguntas_Prof INT NULL DEFAULT NULL, 
   Respostas_Prof_Texto VARCHAR(400) NULL DEFAULT NULL, 
-  Está_correto_Prof TINYINT NOT NULL, 
+  Está_correto TINYINT NOT NULL, 
   PRIMARY KEY (idRespostas_Prof),
   CONSTRAINT Perguntas_Respostas_Prof FOREIGN KEY(idPerguntas_Prof) REFERENCES Perguntas_Prof(idPerguntas_Prof)
   ); 
 """
-
-execute_query(connection, create_perguntas_table)
-execute_query(connection, create_respostas_table)
-execute_query(connection, create_usuarios_table)
-execute_query(connection, create_ranking_table)
-execute_query(connection, create_perguntas_prof_table)
-execute_query(connection, create_respostas_prof_table)
 
 pop_perguntas = """
 INSERT INTO Perguntas (Perguntas_texto) VALUES  
@@ -240,45 +271,32 @@ pop_respostas = """
   (18,'16',0), 
   (18,'9',0); 
 """
-connection = create_db_connection("localhost", "root", "Escola2015!!", "py_jungle")
+
+
+
+### lógica principal
+###
+senhadb = 'Escola2015!!'
+hostwork = 'localhost'
+usuariowork = 'root'
+connection = create_server_connection(hostwork, usuariowork, senhadb)
+create_database(connection,'CREATE DATABASE IF NOT EXISTS py_jungle')
+connection = create_db_connection(hostwork, usuariowork, senhadb, "py_jungle")
+execute_query(connection, create_perguntas_table)
+execute_query(connection, create_respostas_table)
+execute_query(connection, create_usuarios_table)
+execute_query(connection, create_ranking_table)
+execute_query(connection, create_perguntas_prof_table)
+execute_query(connection, create_respostas_prof_table)
 execute_query(connection, pop_perguntas)
 execute_query(connection, pop_respostas)
 
-def inserir_pergunta_prof(texto_pergunta):
-    # Conectar ao banco de dados
-    connection = create_db_connection("localhost", "root", "Escola2015!!", "py_jungle")
 
-    try:
-        # Inserir a pergunta na tabela
-        query = f"INSERT INTO Perguntas_Prof (Perguntas_Prof_Texto) VALUES ('{texto_pergunta}')"
-        execute_query(connection, query)
-        print("Pergunta do professor inserida com sucesso!")
-    except Error as err:
-        print(f"Erro ao inserir a pergunta do professor: {err}")
-    finally:
-        # Fechar a conexão com o banco de dados
-        if connection:
-            connection.close()
 #Exemplo de uso:
 texto = input("Digite o texto da pergunta do professor: ")
 inserir_pergunta_prof(texto)
 
-def inserir_resposta_prof(id_pergunta_prof, texto_resposta, esta_correto):
-    # Conectar ao banco de dados
-    connection = create_db_connection("localhost", "root", "Escola2015!!", "py_jungle")
 
-    try:
-        # Inserir as informações da resposta na tabela
-        query = f"INSERT INTO RespostasdoProf (idPerguntas_Prof, Respostas_Prof_Texto, Está_correto_Prof) " \
-                f"VALUES ({id_pergunta_prof}, '{texto_resposta}', {esta_correto})"
-        execute_query_para_resp(connection, query)
-        print("Resposta do professor inserida com sucesso!")
-    except Error as err:
-        print(f"Erro ao inserir a resposta do professor: {err}")
-    finally:
-        # Fechar a conexão com o banco de dados
-        if connection:
-            connection.close()
 id_pergunta_prof = int(input("Digite o id da pergunta do professor: "))
 texto_resposta = input("Digite a resposta da pergunta do professor: ")
 esta_correto = int(input("Digite o valor para o campo está correto (1 é True, 0 é False): "))
@@ -286,43 +304,12 @@ esta_correto = int(input("Digite o valor para o campo está correto (1 é True, 
 inserir_resposta_prof(id_pergunta_prof, texto_resposta, esta_correto)
 
 
-def inserir_ranking(id_usuario, total_acertos):
-    # Connect to the database
-    connection = create_db_connection("localhost", "root", "Escola2015!!", "py_jungle")
-
-    try:
-        # Insert the ranking information into the table
-        query = f"INSERT INTO Ranking (idUsuários, Total_Acertos) VALUES ({id_usuario}, {total_acertos})"
-        execute_query(connection, query)
-        print("Ranking information inserted successfully!")
-    except Error as err:
-        print(f"Error inserting ranking information: {err}")
-    finally:
-        # Close the database connection
-        if connection:
-            connection.close()
 #Exemplo de uso:
 id_usuario = int(input("Digite o valor para o campo id_usuário: "))
 total_acertos = int(input("Digite o valor do total de acertos: "))
 
 inserir_ranking(id_usuario, total_acertos)
 
-def inserir_usuario(username, email, login, senha, e_aluno):
-    # Conectar ao banco de dados
-    connection = create_db_connection("localhost", "root", "Escola2015!!", "py_jungle")
-
-    try:
-        # Inserir o usuário na tabela
-        query = f"INSERT INTO Usuários (Username, Email, Login, Senha, É_Aluno) " \
-                f"VALUES ('{username}', '{email}', {login}, '{senha}', {e_aluno})"
-        execute_query(connection, query)
-        print("Usuário inserido com sucesso!")
-    except Error as err:
-        print(f"Erro ao inserir o usuário: {err}")
-    finally:
-        # Fechar a conexão com o banco de dados
-        if connection:
-            connection.close()
 # Exemplo de uso
 username = input("Digite o nome de usuário: ")
 email = input("Digite o email: ")
@@ -331,62 +318,3 @@ senha = input("Digite a senha: ")
 e_aluno = int(input("Digite o valor para o campo É_Aluno (1 para True, 0 para False): "))
 
 inserir_usuario(username, email, login, senha, e_aluno)
-
-#Classe para o usuário ter a conexão com o banco de dados
-class DatabaseConnection:
-    def __init__(self, host_name, user_name, user_password, db_name):
-        self.host_name = host_name
-        self.user_name = user_name
-        self.user_password = user_password
-        self.db_name = db_name
-        self.connection = None
-
-    def connect(self):
-        try:
-            self.connection = mysql.connector.connect(
-                host=self.host_name,
-                user=self.user_name,
-                passwd=self.user_password,
-                database=self.db_name
-            )
-            print("MySQL Database connection successful\n")
-        except Error as err:
-            print(f"Error: '{err}'")
-
-    def execute_query(self, query):
-        cursor = self.connection.cursor()
-        try:
-            # Executar a consulta
-            cursor.execute(query)
-            if "Respostas" in query and "INSERT INTO" in query:
-                table_name = "Respostas"
-                cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
-                result = cursor.fetchone()
-                if result[0] > 0:
-                    print(f"A tabela '{table_name}' já possui registros. A inserção não será executada.")
-                    self.connection.rollback()
-                    return
-            self.connection.commit()
-            print("Query successful\n")
-        except Error as err:
-            print(f"Error: '{err}'")
-
-    def close_connection(self):
-        if self.connection:
-            self.connection.close()
-            print("Database connection closed")
-
-# Exemplo de uso:
-host = "localhost"
-user = "root"
-password = "Escola2015!!"
-database = "py_jungle"
-
-db_connection = DatabaseConnection(host, user, password, database)
-db_connection.connect()
-
-# Aqui você pode executar as queries
-# db_connection.execute_query(query)
-
-# Fechar a conexão com o banco de dados quando terminar
-# db_connection.close_connection()
